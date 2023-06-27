@@ -1,0 +1,3 @@
+<jboss-web>
+    <context-root>/wildfly_domain_app</context-root>
+</jboss-web>
