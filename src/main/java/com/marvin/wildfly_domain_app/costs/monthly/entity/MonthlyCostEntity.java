@@ -1,4 +1,4 @@
-package com.marvin.wildfly_domain_app.costs.daily.entity;
+package com.marvin.wildfly_domain_app.costs.monthly.entity;
 
 import com.marvin.wildfly_domain_app.configuration.entity.BasicEntity;
 import jakarta.persistence.Basic;
@@ -13,20 +13,24 @@ import jakarta.persistence.Table;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "daily_cost", schema = "public", catalog = "wildfly_domain")
-@NamedQueries(
+@Table(name = "monthly_cost", schema = "public", catalog = "wildfly_domain")
+@NamedQueries({
         @NamedQuery(
-                name = "findByYearAndMonth",
-                query = "SELECT d FROM DailyCostEntity d " +
-                        "WHERE EXTRACT(YEAR FROM d.costDate) = :year " +
-                        "AND EXTRACT(MONTH FROM d.costDate) = :month"
+                name = "findMonthlyCostByYearAndMonth",
+                query = "SELECT m FROM MonthlyCostEntity m WHERE m.costDate = :date"
+        ),
+        @NamedQuery(
+                name = "findMonthlyCosts",
+                query = "SELECT m FROM MonthlyCostEntity m ORDER BY m.costDate"
         )
-)
-public class DailyCostEntity extends BasicEntity {
+})
+public class MonthlyCostEntity extends BasicEntity {
+
+    public static final String GET_MONTHLY_COSTS = "findMonthlyCosts";
+    public static final String FIND_MONTHLY_COST_BY_YEAR_AND_MONTH = "findMonthlyCostByYearAndMonth";
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
@@ -41,11 +45,11 @@ public class DailyCostEntity extends BasicEntity {
     @Column(name = "value")
     private BigDecimal value;
 
-    public DailyCostEntity() {
+    public MonthlyCostEntity() {
         // NOOP
     }
 
-    public DailyCostEntity(LocalDate costDate, BigDecimal value) {
+    public MonthlyCostEntity(LocalDate costDate, BigDecimal value) {
         this.costDate = costDate;
         this.value = value;
     }
@@ -71,7 +75,7 @@ public class DailyCostEntity extends BasicEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
-        DailyCostEntity that = (DailyCostEntity) o;
+        MonthlyCostEntity that = (MonthlyCostEntity) o;
         return id == that.id && Objects.equals(costDate, that.costDate) && Objects.equals(value, that.value);
     }
 
@@ -82,7 +86,7 @@ public class DailyCostEntity extends BasicEntity {
 
     @Override
     public String toString() {
-        return "DailyCostEntity{" +
+        return "MonthlyCostEntity{" +
                 "id=" + id +
                 ", costDate=" + costDate +
                 ", value=" + value +

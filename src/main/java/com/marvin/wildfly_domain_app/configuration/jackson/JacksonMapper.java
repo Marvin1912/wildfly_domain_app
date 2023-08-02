@@ -1,14 +1,14 @@
-package com.marvin.wildfly_domain_app.configuration;
+package com.marvin.wildfly_domain_app.configuration.jackson;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import jakarta.ejb.Singleton;
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 
-@Singleton
+@ApplicationScoped
 public class JacksonMapper {
 
     @Produces
