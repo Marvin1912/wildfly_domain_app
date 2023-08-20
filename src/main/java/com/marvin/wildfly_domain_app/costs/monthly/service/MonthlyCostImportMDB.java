@@ -47,7 +47,7 @@ public class MonthlyCostImportMDB implements MessageListener {
             LOGGER.log(Level.INFO, "[" + System.getProperty("server.name") + "] Monthly cost received: " + messageBody);
             final MonthlyCostDTO monthlyCost = objectMapper.readValue(messageBody, MonthlyCostDTO.class);
 
-            final MonthlyCostEntity persistedState = monthlyCostDAO.getMonthlyCost(monthlyCost.costDate());
+            final MonthlyCostEntity persistedState = monthlyCostDAO.get(monthlyCost.costDate());
             if (persistedState == null) {
                 MonthlyCostEntity monthlyCostEntity = new MonthlyCostEntity(monthlyCost.costDate(), monthlyCost.value());
                 monthlyCostDAO.persistMonthlyCost(monthlyCostEntity);

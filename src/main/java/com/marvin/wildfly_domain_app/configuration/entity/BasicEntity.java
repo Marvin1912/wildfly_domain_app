@@ -13,12 +13,12 @@ import java.util.Objects;
 public class BasicEntity {
 
     @Basic
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", nullable = false)
     @CreationTimestamp
     private LocalDateTime creationDate;
 
     @Basic
-    @Column(name = "last_modified")
+    @Column(name = "last_modified", nullable = false)
     @UpdateTimestamp
     private LocalDateTime lastModified;
 

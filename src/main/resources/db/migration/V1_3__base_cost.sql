@@ -1,4 +1,4 @@
-CREATE TABLE monthly_cost
+CREATE TABLE base_cost
 (
     id            SERIAL PRIMARY KEY,
     cost_date     DATE NOT NULL,

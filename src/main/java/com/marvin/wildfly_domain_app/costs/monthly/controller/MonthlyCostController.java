@@ -21,7 +21,7 @@ public class MonthlyCostController {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String getMonthlyCosts() throws Exception {
-        return objectMapper.writeValueAsString(monthlyCostDAO.getMonthlyCosts());
+        return objectMapper.writeValueAsString(monthlyCostDAO.getAll());
     }
 
 }
