@@ -1,13 +1,5 @@
 plugins {
-    id 'java'
-    id 'war'
-}
-
-group 'com.marvin'
-version '1.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
+    id 'ear'
 }
 
 ext {
@@ -17,37 +9,78 @@ ext {
     jacksonVersion = '2.15.2'
 }
 
-sourceCompatibility = '17'
-targetCompatibility = '17'
+subprojects {
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
+    apply plugin: 'java'
+
+    if (name != 'domain-common-module') {
+        apply plugin: 'war'
+    }
+
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+
+        if (name != 'domain-common-module') {
+            implementation project(':domain-common-module')
+        }
+
+        implementation group: 'jakarta.platform', name: 'jakarta.jakartaee-api', version: jakartaVersion
+        implementation group: 'jakarta.platform', name: 'jakarta.jakartaee-web-api', version: jakartaVersion
+        implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '4.0.0'
+        implementation group: 'jakarta.activation', name: 'jakarta.activation-api', version: '2.1.2'
+        implementation group: 'jakarta.enterprise.concurrent', name: 'jakarta.enterprise.concurrent-api', version: '3.0.2'
+
+        implementation group: 'org.flywaydb', name: 'flyway-core', version: flyWayVersion
+
+        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
+        implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
+        implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: jacksonVersion
+
+        implementation group: 'org.hibernate', name: 'hibernate-core', version: '6.2.6.Final'
+
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    webEar
+    jmsEar
 }
 
 dependencies {
-    implementation group: 'jakarta.platform', name: 'jakarta.jakartaee-api', version: jakartaVersion
-    implementation group: 'jakarta.platform', name: 'jakarta.jakartaee-web-api', version: jakartaVersion
-    implementation group: 'jakarta.xml.bind', name: 'jakarta.xml.bind-api', version: '4.0.0'
-    implementation group: 'jakarta.activation', name: 'jakarta.activation-api', version: '2.1.2'
-    implementation group: 'jakarta.enterprise.concurrent', name: 'jakarta.enterprise.concurrent-api', version: '3.0.2'
-
-    implementation group: 'org.flywaydb', name: 'flyway-core', version: flyWayVersion
-
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: jacksonVersion
-    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jsr310', version: jacksonVersion
-    implementation group: 'com.fasterxml.jackson.datatype', name: 'jackson-datatype-jdk8', version: jacksonVersion
-
-    implementation group: 'org.hibernate', name: 'hibernate-core', version: '6.2.6.Final'
-
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
-
-    // Testing
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.8.1'
-    testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.4.0'
-    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.4.0'
-    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.8.1'
+    webEar project(path: ':domain-web-module', configuration: 'archives')
+    jmsEar project(path: ':domain-jms-module', configuration: 'archives')
 }
 
-test {
-    useJUnitPlatform()
+tasks.register('webEarPackage', Ear) {
+    from configurations.webEar
+    archiveFileName = 'webEar.ear'
+    deploymentDescriptor {
+        webModule('domain-web-module-' + findProperty('webModuleVersion') + '.war', '/wildfly_domain_web_app')
+    }
 }
+
+tasks.register('jmsEarPackage', Ear) {
+    from configurations.jmsEar
+    archiveFileName = 'jmsEar.ear'
+    deploymentDescriptor {
+        webModule('domain-jms-module-' + findProperty('jmsModuleVersion') + '.war', '/wildfly_domain_jms_app')
+    }
+}
+
+tasks.register('buildEars')
+buildEars.dependsOn webEarPackage, jmsEarPackage

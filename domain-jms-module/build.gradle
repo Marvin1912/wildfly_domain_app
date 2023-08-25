@@ -1,0 +1,2 @@
+group = 'com.marvin.jms'
+version = findProperty('jmsModuleVersion')

@@ -1,1 +1,5 @@
 rootProject.name = "wildfly_domain_app"
+
+include 'domain-web-module'
+include 'domain-jms-module'
+include 'domain-common-module'
