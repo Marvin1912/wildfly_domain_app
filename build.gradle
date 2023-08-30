@@ -1,7 +1,3 @@
-plugins {
-    id 'ear'
-}
-
 ext {
     junitVersion = '5.9.1'
     flyWayVersion = '9.20.0'
@@ -13,8 +9,12 @@ subprojects {
 
     apply plugin: 'java'
 
-    if (name != 'domain-common-module') {
+    if (name != 'domain-common') {
         apply plugin: 'war'
+    }
+
+    if ((['deployment-jms', 'deployment-web']).contains(name)) {
+        apply plugin: 'ear'
     }
 
     sourceCompatibility = '17'
@@ -30,8 +30,8 @@ subprojects {
 
     dependencies {
 
-        if (name != 'domain-common-module') {
-            implementation project(':domain-common-module')
+        if (name != 'domain-common') {
+            implementation project(':domain-common')
         }
 
         implementation group: 'jakarta.platform', name: 'jakarta.jakartaee-api', version: jakartaVersion
@@ -52,35 +52,9 @@ subprojects {
     }
 }
 
-repositories {
-    mavenCentral()
+tasks.register('buildEars') {
+    dependsOn ([
+            ':deployment-jms:ear',
+            ':deployment-web:ear'
+    ])
 }
-
-configurations {
-    webEar
-    jmsEar
-}
-
-dependencies {
-    webEar project(path: ':domain-web-module', configuration: 'archives')
-    jmsEar project(path: ':domain-jms-module', configuration: 'archives')
-}
-
-tasks.register('webEarPackage', Ear) {
-    from configurations.webEar
-    archiveFileName = 'webEar.ear'
-    deploymentDescriptor {
-        webModule('domain-web-module-' + findProperty('webModuleVersion') + '.war', '/wildfly_domain_web_app')
-    }
-}
-
-tasks.register('jmsEarPackage', Ear) {
-    from configurations.jmsEar
-    archiveFileName = 'jmsEar.ear'
-    deploymentDescriptor {
-        webModule('domain-jms-module-' + findProperty('jmsModuleVersion') + '.war', '/wildfly_domain_jms_app')
-    }
-}
-
-tasks.register('buildEars')
-buildEars.dependsOn webEarPackage, jmsEarPackage

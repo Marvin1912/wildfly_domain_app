@@ -1,0 +1,16 @@
+dependencies {
+    deploy project(path: ':domain-web', configuration: 'archives')
+    earlib project(path: ':domain-common', configuration: 'archives')
+}
+
+tasks.named('ear') {
+    archiveFileName = 'webEar-' + findProperty('webEarVersion') + '.ear'
+    deploymentDescriptor {
+        webModule('domain-web-' + findProperty('webModuleVersion') + '.war', '/wildfly_domain_web_app')
+    }
+
+    dependsOn ([
+            ':domain-common:build',
+            ':domain-web:build',
+    ])
+}

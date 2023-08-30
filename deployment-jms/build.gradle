@@ -1,0 +1,16 @@
+dependencies {
+    deploy project(path: ':domain-jms', configuration: 'archives')
+    earlib project(path: ':domain-common', configuration: 'archives')
+}
+
+tasks.named('ear') {
+    archiveFileName = 'jmsEar-' + findProperty('jmsEarVersion') + '.ear'
+    deploymentDescriptor {
+        webModule('domain-jms-' + findProperty('jmsModuleVersion') + '.war', '/wildfly_domain_jms_app')
+    }
+
+    dependsOn ([
+            ':domain-common:build',
+            ':domain-jms:build',
+    ])
+}
