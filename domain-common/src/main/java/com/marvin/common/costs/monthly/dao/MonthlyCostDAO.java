@@ -18,7 +18,7 @@ public class MonthlyCostDAO extends BasicDAO<MonthlyCostEntity> {
     private static final Logger LOGGER = Logger.getLogger(MonthlyCostDAO.class.getName());
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public List<MonthlyCostEntity> get(LocalDate localDate) {
         log(CrudOperation.READ, MonthlyCostEntity.class, localDate, LOGGER);
         return entityManager.createNamedQuery(MonthlyCostEntity.FIND_MONTHLY_COST_BY_DATE, MonthlyCostEntity.class)
@@ -35,14 +35,14 @@ public class MonthlyCostDAO extends BasicDAO<MonthlyCostEntity> {
     }
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void persistMonthlyCost(MonthlyCostEntity monthlyCostEntity) {
         log(CrudOperation.CREATE, MonthlyCostEntity.class, monthlyCostEntity.getCostDate(), LOGGER);
         entityManager.persist(monthlyCostEntity);
     }
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void updateMonthlyCost(MonthlyCostEntity monthlyCostEntity) {
         log(CrudOperation.UPDATE, MonthlyCostEntity.class, monthlyCostEntity.getCostDate(), LOGGER);
         entityManager.merge(monthlyCostEntity);

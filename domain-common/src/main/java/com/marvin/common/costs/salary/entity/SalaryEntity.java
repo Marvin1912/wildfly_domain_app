@@ -32,6 +32,15 @@ public class SalaryEntity extends BasicEntity {
     public static final String GET_SALARIES = "getSalaries";
     public static final String FIND_SALARIES_BY_DATE = "findSalariesByDate";
 
+    public SalaryEntity() {
+        // NOOP
+    }
+
+    public SalaryEntity(LocalDate salaryDate, BigDecimal value) {
+        this.salaryDate = salaryDate;
+        this.value = value;
+    }
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     @Column(name = "id", nullable = false)
