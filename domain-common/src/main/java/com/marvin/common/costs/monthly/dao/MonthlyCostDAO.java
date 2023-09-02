@@ -1,11 +1,9 @@
 package com.marvin.common.costs.monthly.dao;
 
+import com.marvin.common.costs.monthly.entity.MonthlyCostEntity;
 import com.marvin.common.db.infrastructure.BasicDAO;
 import com.marvin.common.db.infrastructure.CrudOperation;
-import com.marvin.common.costs.monthly.entity.MonthlyCostEntity;
 import jakarta.ejb.Singleton;
-import jakarta.ejb.TransactionAttribute;
-import jakarta.ejb.TransactionAttributeType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,7 +16,6 @@ public class MonthlyCostDAO extends BasicDAO<MonthlyCostEntity> {
     private static final Logger LOGGER = Logger.getLogger(MonthlyCostDAO.class.getName());
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public List<MonthlyCostEntity> get(LocalDate localDate) {
         log(CrudOperation.READ, MonthlyCostEntity.class, localDate, LOGGER);
         return entityManager.createNamedQuery(MonthlyCostEntity.FIND_MONTHLY_COST_BY_DATE, MonthlyCostEntity.class)
@@ -27,7 +24,6 @@ public class MonthlyCostDAO extends BasicDAO<MonthlyCostEntity> {
     }
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public Stream<MonthlyCostEntity> getAll() {
         log(CrudOperation.READ, MonthlyCostEntity.class, "ALL", LOGGER);
         return entityManager.createNamedQuery(MonthlyCostEntity.GET_MONTHLY_COSTS, MonthlyCostEntity.class)
@@ -35,15 +31,13 @@ public class MonthlyCostDAO extends BasicDAO<MonthlyCostEntity> {
     }
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void persistMonthlyCost(MonthlyCostEntity monthlyCostEntity) {
+    public void persist(MonthlyCostEntity monthlyCostEntity) {
         log(CrudOperation.CREATE, MonthlyCostEntity.class, monthlyCostEntity.getCostDate(), LOGGER);
         entityManager.persist(monthlyCostEntity);
     }
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void updateMonthlyCost(MonthlyCostEntity monthlyCostEntity) {
+    public void update(MonthlyCostEntity monthlyCostEntity) {
         log(CrudOperation.UPDATE, MonthlyCostEntity.class, monthlyCostEntity.getCostDate(), LOGGER);
         entityManager.merge(monthlyCostEntity);
     }

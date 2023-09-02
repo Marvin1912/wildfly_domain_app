@@ -1,8 +1,8 @@
-package com.marvin.jms.costs.monthly.service;
+package com.marvin.jms.costs.daily.service;
 
-import com.marvin.common.costs.monthly.dao.MonthlyCostDAO;
-import com.marvin.common.costs.monthly.dto.MonthlyCostDTO;
-import com.marvin.common.costs.monthly.entity.MonthlyCostEntity;
+import com.marvin.common.costs.daily.dao.DailyCostDAO;
+import com.marvin.common.costs.daily.dto.DailyCostDTO;
+import com.marvin.common.costs.daily.entity.DailyCostEntity;
 import com.marvin.jms.costs.AbstractCostImportMDB;
 import jakarta.ejb.ActivationConfigProperty;
 import jakarta.ejb.EJB;
@@ -25,29 +25,29 @@ import java.util.logging.Logger;
         ),
         @ActivationConfigProperty(
                 propertyName = "destination",
-                propertyValue = "/jms/queue/costs/import/monthly"
+                propertyValue = "/jms/queue/costs/import/daily"
         )
 })
-public class MonthlyCostImportMDB extends AbstractCostImportMDB<MonthlyCostDTO> {
+public class DailyCostImportMDB extends AbstractCostImportMDB<DailyCostDTO> {
 
-    private static final Logger LOGGER = Logger.getLogger(MonthlyCostImportMDB.class.getName());
-
-    @EJB
-    private MonthlyCostDAO monthlyCostDAO;
+    private static final Logger LOGGER = Logger.getLogger(DailyCostImportMDB.class.getName());
 
     @EJB
-    private MonthlyCostExportService monthlyCostExportService;
+    private DailyCostDAO dailyCostDAO;
+
+    @EJB
+    private DailyCostExportService dailyCostExportService;
 
     @Override
     public void onMessage(Message message) {
         try {
             final String messageBody = message.getBody(String.class);
-            LOGGER.log(Level.INFO, "[" + HOST_NAME + "] Monthly cost received: " + messageBody);
-            final MonthlyCostDTO monthlyCost = objectMapper.readValue(messageBody, MonthlyCostDTO.class);
+            LOGGER.log(Level.INFO, "[" + HOST_NAME + "] Daily cost received: " + messageBody);
+            final DailyCostDTO dailyCost = objectMapper.readValue(messageBody, DailyCostDTO.class);
 
-            persist(monthlyCost);
+            persist(dailyCost);
 
-            monthlyCostExportService.doExport(monthlyCost);
+            dailyCostExportService.doExport(dailyCost);
 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "[" + HOST_NAME + "] Error while trying to consume messages: " + e.getMessage());
@@ -55,19 +55,19 @@ public class MonthlyCostImportMDB extends AbstractCostImportMDB<MonthlyCostDTO> 
     }
 
     @Override
-    protected void persist(MonthlyCostDTO monthlyCost) {
-        final List<MonthlyCostEntity> persistedStateList = monthlyCostDAO.get(monthlyCost.costDate());
+    protected void persist(DailyCostDTO dailyCost) {
+        final List<DailyCostEntity> persistedStateList = dailyCostDAO.get(dailyCost.costDate());
         if (persistedStateList.isEmpty()) {
-            MonthlyCostEntity monthlyCostEntity = new MonthlyCostEntity(monthlyCost.costDate(), monthlyCost.value());
-            monthlyCostDAO.persist(monthlyCostEntity);
+            DailyCostEntity monthlyCostEntity = new DailyCostEntity(dailyCost.costDate(), dailyCost.value());
+            dailyCostDAO.persist(monthlyCostEntity);
         } else {
-            BigDecimal newValue = monthlyCost.value();
-            MonthlyCostEntity persistedState = persistedStateList.get(0);
+            BigDecimal newValue = dailyCost.value();
+            DailyCostEntity persistedState = persistedStateList.get(0);
             BigDecimal persistedValue = persistedState.getValue();
             if (newValue.compareTo(persistedValue) > 0) {
                 LOGGER.log(Level.INFO, "Updated value of " + persistedState.getCostDate() + " from " + newValue + " to " + persistedValue + "!");
                 persistedState.setValue(newValue);
-                monthlyCostDAO.update(persistedState);
+                dailyCostDAO.update(persistedState);
             }
         }
     }

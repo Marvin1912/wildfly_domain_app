@@ -32,13 +32,13 @@ public class SalaryDAO extends BasicDAO<SalaryEntity> {
     }
 
     @Override
-    public void persistMonthlyCost(SalaryEntity salaryEntity) {
+    public void persist(SalaryEntity salaryEntity) {
         log(CrudOperation.CREATE, SalaryEntity.class, salaryEntity.getSalaryDate(), LOGGER);
         entityManager.persist(salaryEntity);
     }
 
     @Override
-    public void updateMonthlyCost(SalaryEntity salaryEntity) {
+    public void update(SalaryEntity salaryEntity) {
         log(CrudOperation.UPDATE, MonthlyCostEntity.class, salaryEntity.getSalaryDate(), LOGGER);
         entityManager.merge(salaryEntity);
     }

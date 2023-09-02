@@ -31,12 +31,12 @@ public class SpecialCostEntryDAO extends BasicDAO<SpecialCostEntryEntity> {
     }
 
     @Override
-    public void persistMonthlyCost(SpecialCostEntryEntity specialCostEntity) {
+    public void persist(SpecialCostEntryEntity specialCostEntity) {
 
     }
 
     @Override
-    public void updateMonthlyCost(SpecialCostEntryEntity specialCostEntity) {
+    public void update(SpecialCostEntryEntity specialCostEntity) {
 
     }
 }

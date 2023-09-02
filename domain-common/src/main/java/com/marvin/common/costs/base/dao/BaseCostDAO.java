@@ -28,12 +28,12 @@ public class BaseCostDAO extends BasicDAO<BaseCostEntity> {
     }
 
     @Override
-    public void persistMonthlyCost(BaseCostEntity baseCostEntity) {
+    public void persist(BaseCostEntity baseCostEntity) {
 
     }
 
     @Override
-    public void updateMonthlyCost(BaseCostEntity baseCostEntity) {
+    public void update(BaseCostEntity baseCostEntity) {
 
     }
 }

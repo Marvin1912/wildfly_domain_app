@@ -12,9 +12,9 @@ public interface CrudDAO<T> {
 
     Stream<T> getAll();
 
-    void persistMonthlyCost(T t);
+    void persist(T t);
 
-    void updateMonthlyCost(T t);
+    void update(T t);
 
     default void log(CrudOperation operation, Class<?> c, Object key, Logger logger) {
         logger.log(Level.FINE, "[" + operation + "] Entity: [" + c.getName() + "], Key: [" + key + "]");

@@ -58,7 +58,7 @@ public class SalaryImportMDB extends AbstractCostImportMDB<SalaryDTO> {
         final List<SalaryEntity> persistedStateList = salaryDAO.get(salary.salaryDate());
         if (persistedStateList.isEmpty()) {
             SalaryEntity salaryEntity = new SalaryEntity(salary.salaryDate(), salary.value());
-            salaryDAO.persistMonthlyCost(salaryEntity);
+            salaryDAO.persist(salaryEntity);
         }
     }
 }

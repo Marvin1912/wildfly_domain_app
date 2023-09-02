@@ -1,7 +1,6 @@
 package com.marvin.common.costs.daily.dao;
 
 import com.marvin.common.costs.daily.entity.DailyCostEntity;
-import com.marvin.common.costs.monthly.entity.MonthlyCostEntity;
 import com.marvin.common.db.infrastructure.BasicDAO;
 import com.marvin.common.db.infrastructure.CrudOperation;
 import jakarta.ejb.Stateless;
@@ -23,23 +22,28 @@ public class DailyCostDAO extends BasicDAO<DailyCostEntity> {
 
     @Override
     public List<DailyCostEntity> get(LocalDate localDate) {
-        return null;
+        log(CrudOperation.READ, DailyCostEntity.class, localDate, LOGGER);
+        return entityManager.createNamedQuery(DailyCostEntity.FIND_DAILY_COST_BY_DATE, DailyCostEntity.class)
+                .setParameter("date", localDate)
+                .getResultList();
     }
 
     @Override
     public Stream<DailyCostEntity> getAll() {
-        log(CrudOperation.READ, MonthlyCostEntity.class, "ALL", LOGGER);
+        log(CrudOperation.READ, DailyCostEntity.class, "ALL", LOGGER);
         return entityManager.createNamedQuery(DailyCostEntity.GET_DAILY_COSTS, DailyCostEntity.class)
                 .getResultStream();
     }
 
     @Override
-    public void persistMonthlyCost(DailyCostEntity monthlyCostEntity) {
-
+    public void persist(DailyCostEntity dailyCostEntity) {
+        log(CrudOperation.CREATE, DailyCostEntity.class, dailyCostEntity.getCostDate(), LOGGER);
+        entityManager.persist(dailyCostEntity);
     }
 
     @Override
-    public void updateMonthlyCost(DailyCostEntity monthlyCostEntity) {
-
+    public void update(DailyCostEntity dailyCostEntity) {
+        log(CrudOperation.UPDATE, DailyCostEntity.class, dailyCostEntity.getCostDate(), LOGGER);
+        entityManager.merge(dailyCostEntity);
     }
 }
