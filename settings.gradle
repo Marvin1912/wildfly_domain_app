@@ -6,4 +6,5 @@ include 'domain-common'
 
 include 'deployment-web'
 include 'deployment-jms'
+include 'domain-backup'
 

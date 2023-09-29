@@ -13,4 +13,12 @@ tasks.named('ear') {
             ':domain-common:build',
             ':domain-jms:build',
     ])
+
+    doLast {
+        copy {
+            from "$project.buildDir/libs"
+            into "$rootProject.buildDir"
+            include('jmsEar*')
+        }
+    }
 }

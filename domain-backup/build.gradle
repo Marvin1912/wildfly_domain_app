@@ -1,0 +1,6 @@
+group = 'com.marvin.domain.backup'
+version = findProperty('domainBackupModuleVersion')
+
+dependencies {
+    implementation group: 'com.google.apis', name: 'google-api-services-drive', version: 'v3-rev20230822-2.0.0'
+}
