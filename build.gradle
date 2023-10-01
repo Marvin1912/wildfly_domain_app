@@ -1,3 +1,7 @@
+plugins {
+    id 'java'
+}
+
 ext {
     junitVersion = '5.9.1'
     flyWayVersion = '9.20.0'

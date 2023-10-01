@@ -2,5 +2,6 @@ group = 'com.marvin.web'
 version = findProperty('webModuleVersion')
 
 dependencies {
+    implementation project(':domain-backup')
     implementation group: 'org.apache.activemq', name: 'artemis-jakarta-client', version: '2.31.0'
 }

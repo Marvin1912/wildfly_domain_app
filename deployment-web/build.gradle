@@ -13,4 +13,12 @@ tasks.named('ear') {
             ':domain-common:build',
             ':domain-web:build',
     ])
+
+    doLast {
+        copy {
+            from "$project.buildDir/libs"
+            into "$rootProject.buildDir"
+            include('webEar*')
+        }
+    }
 }
