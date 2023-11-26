@@ -23,21 +23,21 @@ import java.util.Objects;
                 query = "SELECT d FROM DailyCostEntity d WHERE d.costDate = :date ORDER BY d.costDate"
         ),
         @NamedQuery(
-                name = DailyCostEntity.GET_DAILY_COSTS,
-                query = "SELECT d FROM DailyCostEntity d ORDER BY d.costDate"
+                name = DailyCostEntity.FIND_DAILY_COST_BY_DATE_AFTER,
+                query = "SELECT d FROM DailyCostEntity d " +
+                        "WHERE d.costDate >= :date " +
+                        "ORDER BY d.costDate"
         ),
         @NamedQuery(
-                name = DailyCostEntity.FIND_DAILY_COST_BY_YEAR_AND_MONTH,
-                query = "SELECT d FROM DailyCostEntity d " +
-                        "WHERE EXTRACT(YEAR FROM d.costDate) = :year " +
-                        "AND EXTRACT(MONTH FROM d.costDate) = :month"
-        ),
+                name = DailyCostEntity.GET_DAILY_COSTS,
+                query = "SELECT d FROM DailyCostEntity d ORDER BY d.costDate"
+        )
 })
 public class DailyCostEntity extends BasicEntity {
 
     public static final String GET_DAILY_COSTS = "findDailyCosts";
     public static final String FIND_DAILY_COST_BY_DATE = "findDailyCostByDate";
-    public static final String FIND_DAILY_COST_BY_YEAR_AND_MONTH = "findDailyCostByYearAndMonth";
+    public static final String FIND_DAILY_COST_BY_DATE_AFTER = "findDailyCostByDateAfter";
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id

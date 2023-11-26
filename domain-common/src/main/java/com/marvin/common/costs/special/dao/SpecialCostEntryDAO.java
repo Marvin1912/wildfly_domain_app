@@ -1,8 +1,8 @@
 package com.marvin.common.costs.special.dao;
 
+import com.marvin.common.costs.special.entity.SpecialCostEntryEntity;
 import com.marvin.common.db.infrastructure.BasicDAO;
 import com.marvin.common.db.infrastructure.CrudOperation;
-import com.marvin.common.costs.special.entity.SpecialCostEntryEntity;
 import jakarta.ejb.Singleton;
 
 import java.time.LocalDate;
@@ -31,8 +31,9 @@ public class SpecialCostEntryDAO extends BasicDAO<SpecialCostEntryEntity> {
     }
 
     @Override
-    public void persist(SpecialCostEntryEntity specialCostEntity) {
-
+    public void persist(SpecialCostEntryEntity specialCostEntryEntity) {
+        log(CrudOperation.CREATE, SpecialCostEntryDAO.class, "ALL", LOGGER);
+        entityManager.persist(specialCostEntryEntity);
     }
 
     @Override

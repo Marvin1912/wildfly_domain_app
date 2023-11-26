@@ -45,9 +45,11 @@ public class MonthlyCostImportMDB extends AbstractCostImportMDB<MonthlyCostDTO> 
             LOGGER.log(Level.INFO, "[" + HOST_NAME + "] Monthly cost received: " + messageBody);
             final MonthlyCostDTO monthlyCost = objectMapper.readValue(messageBody, MonthlyCostDTO.class);
 
-            persist(monthlyCost);
+            boolean update = persist(monthlyCost);
 
-            monthlyCostExportService.doExport(monthlyCost);
+            if (update) {
+                monthlyCostExportService.doExport(monthlyCost);
+            }
 
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "[" + HOST_NAME + "] Error while trying to consume messages: " + e.getMessage());
@@ -55,11 +57,12 @@ public class MonthlyCostImportMDB extends AbstractCostImportMDB<MonthlyCostDTO> 
     }
 
     @Override
-    protected void persist(MonthlyCostDTO monthlyCost) {
+    protected boolean persist(MonthlyCostDTO monthlyCost) {
         final List<MonthlyCostEntity> persistedStateList = monthlyCostDAO.get(monthlyCost.costDate());
         if (persistedStateList.isEmpty()) {
             MonthlyCostEntity monthlyCostEntity = new MonthlyCostEntity(monthlyCost.costDate(), monthlyCost.value());
             monthlyCostDAO.persist(monthlyCostEntity);
+            return true;
         } else {
             BigDecimal newValue = monthlyCost.value();
             MonthlyCostEntity persistedState = persistedStateList.get(0);
@@ -68,7 +71,9 @@ public class MonthlyCostImportMDB extends AbstractCostImportMDB<MonthlyCostDTO> 
                 LOGGER.log(Level.INFO, "Updated value of " + persistedState.getCostDate() + " from " + newValue + " to " + persistedValue + "!");
                 persistedState.setValue(newValue);
                 monthlyCostDAO.update(persistedState);
+                return true;
             }
         }
+        return false;
     }
 }

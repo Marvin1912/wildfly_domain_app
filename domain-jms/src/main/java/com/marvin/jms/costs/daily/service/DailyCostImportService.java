@@ -28,15 +28,16 @@ public class DailyCostImportService {
     @EJB
     private DailyCostDAO dailyCostDAO;
 
-    public void importDailyCost(DailyCostDTO dailyCost) {
-        persist(dailyCost);
+    public boolean importDailyCost(DailyCostDTO dailyCost) {
+        return persist(dailyCost);
     }
 
-    private void persist(DailyCostDTO dailyCost) {
+    private boolean persist(DailyCostDTO dailyCost) {
         final List<DailyCostEntity> persistedStateList = dailyCostDAO.get(dailyCost.costDate());
         if (persistedStateList.isEmpty()) {
             DailyCostEntity monthlyCostEntity = new DailyCostEntity(dailyCost.costDate(), dailyCost.value());
             dailyCostDAO.persist(monthlyCostEntity);
+            return true;
         } else {
             BigDecimal newValue = dailyCost.value();
             DailyCostEntity persistedState = persistedStateList.get(0);
@@ -45,7 +46,9 @@ public class DailyCostImportService {
                 LOGGER.log(Level.INFO, "Updated value of " + persistedState.getCostDate() + " from " + newValue + " to " + persistedValue + "!");
                 persistedState.setValue(newValue);
                 dailyCostDAO.update(persistedState);
+                return true;
             }
         }
+        return false;
     }
 }

@@ -54,11 +54,12 @@ public class SalaryImportMDB extends AbstractCostImportMDB<SalaryDTO> {
     }
 
     @Override
-    protected void persist(SalaryDTO salary) {
+    protected boolean persist(SalaryDTO salary) {
         final List<SalaryEntity> persistedStateList = salaryDAO.get(salary.salaryDate());
         if (persistedStateList.isEmpty()) {
             SalaryEntity salaryEntity = new SalaryEntity(salary.salaryDate(), salary.value());
             salaryDAO.persist(salaryEntity);
         }
+        return true;
     }
 }

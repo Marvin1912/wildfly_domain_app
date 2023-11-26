@@ -46,4 +46,11 @@ public class DailyCostDAO extends BasicDAO<DailyCostEntity> {
         log(CrudOperation.UPDATE, DailyCostEntity.class, dailyCostEntity.getCostDate(), LOGGER);
         entityManager.merge(dailyCostEntity);
     }
+
+    public List<DailyCostEntity> getByDateAfter(LocalDate localDate) {
+        log(CrudOperation.READ, DailyCostEntity.class, localDate, LOGGER);
+        return entityManager.createNamedQuery(DailyCostEntity.FIND_DAILY_COST_BY_DATE_AFTER, DailyCostEntity.class)
+                .setParameter("date", localDate)
+                .getResultList();
+    }
 }

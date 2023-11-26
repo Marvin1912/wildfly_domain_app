@@ -13,6 +13,6 @@ public abstract class AbstractCostImportMDB<ENTITY> implements MessageListener {
     @JacksonMapperQualifier
     protected ObjectMapper objectMapper;
 
-    protected abstract void persist(ENTITY entity);
+    protected abstract boolean persist(ENTITY entity);
 
 }

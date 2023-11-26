@@ -45,17 +45,17 @@ public class DailyCostImportMDB extends AbstractCostImportMDB<DailyCostDTO> {
             LOGGER.log(Level.INFO, "[" + HOST_NAME + "] Daily cost received: " + messageBody);
             final DailyCostDTO dailyCost = objectMapper.readValue(messageBody, DailyCostDTO.class);
 
-            persist(dailyCost);
-
-            dailyCostExportService.doExport(dailyCost);
-
+            boolean update = persist(dailyCost);
+            if (update) {
+                dailyCostExportService.doExport(dailyCost);
+            }
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "[" + HOST_NAME + "] Error while trying to consume messages: " + e.getMessage());
         }
     }
 
     @Override
-    protected void persist(DailyCostDTO dailyCost) {
-        dailyCostImportService.importDailyCost(dailyCost);
+    protected boolean persist(DailyCostDTO dailyCost) {
+        return dailyCostImportService.importDailyCost(dailyCost);
     }
 }
